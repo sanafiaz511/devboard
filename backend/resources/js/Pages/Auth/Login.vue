@@ -94,6 +94,15 @@ const submit = () => {
                 >
                     Log in
                 </PrimaryButton>
+
+            </div>
+            <div class="mt-4">
+                <a
+                    href="/auth/github"
+                    class="block w-full text-center bg-black text-white py-2 rounded hover:bg-gray-800"
+                >
+                    Login with GitHub
+                </a>
             </div>
         </form>
     </GuestLayout>
