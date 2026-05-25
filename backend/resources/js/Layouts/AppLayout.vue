@@ -12,12 +12,12 @@
           Dashboard
         </a>
 
-        <a href="#" class="block px-3 py-2 rounded hover:bg-gray-700">
+        <a href="/github" class="block px-3 py-2 rounded hover:bg-gray-700">
           GitHub
         </a>
 
-        <a href="#" class="block px-3 py-2 rounded hover:bg-gray-700">
-          Tasks
+        <a href="/kanban" class="block px-3 py-2 rounded hover:bg-gray-700">
+        Tasks (Kanban)
         </a>
 
         <a href="#" class="block px-3 py-2 rounded hover:bg-gray-700">

@@ -10,6 +10,6 @@ class Board extends Model
 
     public function columns()
     {
-        return $this->hasMany(BoardColumn::class);
+        return $this->hasMany(BoardColumn::class)->orderBy('position');
     }
 }
