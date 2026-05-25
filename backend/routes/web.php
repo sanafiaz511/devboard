@@ -27,5 +27,6 @@ Route::middleware('auth')->group(function () {
 
 Route::get('/auth/github', [GitHubController::class, 'redirect']);
 Route::get('/auth/github/callback', [GitHubController::class, 'callback']);
+Route::get('/github', [GitHubController::class, 'index']);
 
 require __DIR__.'/auth.php';
