@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Services\Analytics\GitHubAnalyticsService;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Http\Request;
@@ -13,7 +14,8 @@ use Inertia\Inertia;
 class GitHubController extends Controller
 {
     public function __construct(
-        protected GitHubService $gitHubService
+        protected GitHubService $gitHubService,
+        protected GitHubAnalyticsService $analyticsService
     ) {}
 
     public function index(Request $request)
@@ -28,6 +30,7 @@ class GitHubController extends Controller
         return Inertia::render('GitHub/Index', [
             'repos' => $this->gitHubService->getRepos($user->github_token),
             'prs' => $this->gitHubService->getPullRequests($user->github_token),
+            'analytics' => $this->analyticsService->dashboard($user->github_token),
         ]);
     }
 
