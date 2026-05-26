@@ -18,6 +18,13 @@ Route::middleware('auth')->group(function () {
     Route::post('/kanban/tasks/move', [\App\Http\Controllers\KanbanTaskController::class, 'move']);
     Route::get('/activities', [\App\Http\Controllers\ActivityController::class, 'index']);
     Route::get('/github', [GitHubController::class, 'index']);
+    Route::post('/user/theme', function (\Illuminate\Http\Request $request) {
+        $request->user()->update([
+            'dark_mode' => $request->dark_mode
+        ]);
+
+        return response()->json(['success' => true]);
+    });
 });
 
 Route::get('/auth/github', [GitHubController::class, 'redirect']);

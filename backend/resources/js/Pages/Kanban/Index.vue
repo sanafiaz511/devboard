@@ -11,11 +11,18 @@ const props = defineProps({
 })
 
 const boardState = ref(JSON.parse(JSON.stringify(props.board)))
-const activities = ref([])
+const loading = ref(true)
 
 onMounted(async () => {
   const res = await axios.get('/activities')
   activityStore.setActivities(res.data)
+
+   try {
+    const res = await axios.get('/board')
+    boardState.value = res.data
+  } finally {
+    loading.value = false
+  }
 })
 
 function applyTaskMoved(event) {
@@ -86,44 +93,52 @@ function onDrag(column) {
 <template>
   <AppLayout>
 
-    <div class="mb-6">
-      <h1 class="text-2xl font-bold">
-        {{ boardState.name }}
-      </h1>
+    <!-- LOADING STATE -->
+    <div v-if="loading" class="p-6 animate-pulse text-gray-500">
+      Loading board...
     </div>
 
-    <!-- Columns -->
-    <div class="flex gap-4 overflow-x-auto">
+    <!-- MAIN BOARD -->
+    <div v-else>
 
-      <div
-        v-for="column in boardState.columns"
-        :key="column.id"
-        class="bg-gray-100 rounded p-3 w-72 flex-shrink-0"
-      >
+      <div class="mb-6">
+        <h1 class="text-2xl font-bold">
+          {{ boardState.name }}
+        </h1>
+      </div>
 
-        <!-- Column Title -->
-        <h2 class="font-semibold mb-3">
-          {{ column.name }}
-        </h2>
+      <!-- Columns -->
+      <div class="flex gap-4 overflow-x-auto">
 
-        <!-- DRAGGABLE TASKS -->
-        <draggable
+        <div
+          v-for="column in boardState.columns"
+          :key="column.id"
+          class="bg-gray-100 rounded p-3 w-72 flex-shrink-0"
+        >
+
+          <h2 class="font-semibold mb-3">
+            {{ column.name }}
+          </h2>
+
+          <draggable
             v-model="column.tasks"
             group="tasks"
             item-key="id"
             class="space-y-2 min-h-[100px]"
             @change="onDrag(column)"
-            >
+          >
+            <template #item="{ element }">
+              <div class="bg-white p-3 rounded shadow cursor-move hover:shadow-md transition">
+                {{ element.title }}
+              </div>
+            </template>
+          </draggable>
 
-          <template #item="{ element }">
-            <div
-              class="bg-white p-3 rounded shadow cursor-move hover:shadow-md transition"
-            >
-              {{ element.title }}
-            </div>
-          </template>
+          <div v-if="column.tasks.length === 0" class="text-gray-400 text-sm mt-2">
+            No tasks yet
+          </div>
 
-        </draggable>
+        </div>
 
       </div>
 
