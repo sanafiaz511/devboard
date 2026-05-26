@@ -16,10 +16,11 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/kanban', [KanbanController::class, 'index']);
     Route::post('/kanban/tasks/move', [\App\Http\Controllers\KanbanTaskController::class, 'move']);
+    Route::get('/activities', [\App\Http\Controllers\ActivityController::class, 'index']);
+    Route::get('/github', [GitHubController::class, 'index']);
 });
 
 Route::get('/auth/github', [GitHubController::class, 'redirect']);
 Route::get('/auth/github/callback', [GitHubController::class, 'callback']);
-Route::get('/github', [GitHubController::class, 'index']);
 
 require __DIR__ . '/auth.php';

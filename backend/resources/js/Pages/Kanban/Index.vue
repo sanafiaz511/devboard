@@ -3,12 +3,20 @@ import { ref, onMounted, onBeforeUnmount } from 'vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
 import draggable from 'vuedraggable'
 import axios from 'axios'
+import { useActivityStore } from '@/stores/activityStore'
 
+const activityStore = useActivityStore()
 const props = defineProps({
   board: Object
 })
 
 const boardState = ref(JSON.parse(JSON.stringify(props.board)))
+const activities = ref([])
+
+onMounted(async () => {
+  const res = await axios.get('/activities')
+  activityStore.setActivities(res.data)
+})
 
 function applyTaskMoved(event) {
   const task = event.task
@@ -51,6 +59,11 @@ onMounted(() => {
     console.log('Realtime update:', event)
     applyTaskMoved(event)
   })
+
+    window.Echo.channel('activity')
+    .listen('.activity.created', (event) => {
+    activityStore.addActivity(event.activity)
+    })
 })
 
 onBeforeUnmount(() => {
