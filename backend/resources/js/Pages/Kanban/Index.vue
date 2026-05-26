@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
 import draggable from 'vuedraggable'
 import axios from 'axios'
@@ -8,14 +8,63 @@ const props = defineProps({
   board: Object
 })
 
-const boardState = ref(props.board)
+const boardState = ref(JSON.parse(JSON.stringify(props.board)))
+
+function applyTaskMoved(event) {
+  const task = event.task
+  if (!task) {
+    return
+  }
+
+  const sourceColumn = boardState.value.columns.find((column) =>
+    column.tasks.some((t) => t.id === task.id),
+  )
+  const targetColumn = boardState.value.columns.find(
+    (column) => column.id === task.board_column_id,
+  )
+
+  if (!targetColumn) {
+    return
+  }
+
+  if (sourceColumn) {
+    const taskIndex = sourceColumn.tasks.findIndex((t) => t.id === task.id)
+    if (taskIndex !== -1) {
+      sourceColumn.tasks.splice(taskIndex, 1)
+    }
+  }
+
+  targetColumn.tasks.splice(Number(task.position), 0, task)
+
+  targetColumn.tasks = targetColumn.tasks
+    .sort((a, b) => a.position - b.position)
+    .map((t, index) => ({ ...t, position: index }))
+}
+
+onMounted(() => {
+  if (!window.Echo) {
+    console.warn('Echo is not initialized')
+    return
+  }
+
+  window.Echo.channel('kanban').listen('.task.moved', (event) => {
+    console.log('Realtime update:', event)
+    applyTaskMoved(event)
+  })
+})
+
+onBeforeUnmount(() => {
+  if (window.Echo) {
+    window.Echo.leave('kanban')
+  }
+})
 
 function onDrag(column) {
   column.tasks.forEach((task, index) => {
     axios.post('/kanban/tasks/move', {
       task_id: task.id,
       board_column_id: column.id,
-      position: index
+      position: index,
     })
   })
 }

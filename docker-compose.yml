@@ -41,5 +41,19 @@ services:
     ports:
       - "6379:6379"
 
+  reverb:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    container_name: devboard_reverb
+    working_dir: /var/www
+    volumes:
+      - ./backend:/var/www
+    command: php artisan reverb:start --host=0.0.0.0 --port=8080
+    ports:
+      - "8080:8080"
+    depends_on:
+      - redis
+      
 volumes:
   postgres_data:

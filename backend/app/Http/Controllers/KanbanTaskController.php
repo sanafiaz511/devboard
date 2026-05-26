@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Task;
+use App\Events\TaskMoved;
 
 class KanbanTaskController extends Controller
 {
@@ -21,6 +22,8 @@ class KanbanTaskController extends Controller
             'board_column_id' => $request->board_column_id,
             'position' => $request->position,
         ]);
+        
+        broadcast(new TaskMoved($task))->toOthers();
 
         return response()->json([
             'success' => true
