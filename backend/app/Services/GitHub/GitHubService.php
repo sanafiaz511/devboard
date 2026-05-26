@@ -42,4 +42,18 @@ class GitHubService
             ->get("{$this->baseUrl}/user")
             ->json();
     }
+
+    public function countRepos($token): int
+    {
+        $repos = $this->getRepos($token);
+
+        return is_array($repos) ? count($repos) : 0;
+    }
+
+    public function countPullRequests($token): int
+    {
+        $prs = $this->getPullRequests($token);
+
+        return is_array($prs) ? count($prs) : 0;
+    }
 }
