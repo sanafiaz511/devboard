@@ -14,11 +14,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::get('/kanban', [KanbanController::class, 'index']);
+    Route::post('/kanban/tasks/move', [\App\Http\Controllers\KanbanTaskController::class, 'move']);
 });
 
 Route::get('/auth/github', [GitHubController::class, 'redirect']);
 Route::get('/auth/github/callback', [GitHubController::class, 'callback']);
 Route::get('/github', [GitHubController::class, 'index']);
-Route::get('/kanban', [KanbanController::class, 'index']);
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
