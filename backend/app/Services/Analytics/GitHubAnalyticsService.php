@@ -13,7 +13,7 @@ class GitHubAnalyticsService
 
     public function dashboard($token)
     {
-        return Cache::remember("github_analytics_{$token}", 300, function () use ($token) {
+        return Cache::remember("github_analytics_user_{$token}", 300, function () use ($token) {
 
             $repos = $this->gitHubService->getRepos($token);
 

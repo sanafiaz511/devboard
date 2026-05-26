@@ -20,8 +20,9 @@ class GitHubService
     public function getRepos($token)
     {
         return Cache::remember("github_repos_{$token}", 600, function () use ($token) {
+
             return Http::withHeaders($this->headers($token))
-                ->get("{$this->baseUrl}/user/repos")
+                ->get("{$this->baseUrl}/user/repos?per_page=20")
                 ->json();
         });
     }
@@ -30,7 +31,7 @@ class GitHubService
     {
         return Cache::remember("github_prs_{$token}", 300, function () use ($token) {
             return Http::withHeaders($this->headers($token))
-                ->get("{$this->baseUrl}/pulls")
+                ->get("{$this->baseUrl}/pulls?per_page=20")
                 ->json();
         });
     }

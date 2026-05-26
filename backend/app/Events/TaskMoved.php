@@ -11,6 +11,7 @@ use Illuminate\Queue\SerializesModels;
 class TaskMoved implements ShouldBroadcast
 {
     use Dispatchable, SerializesModels;
+    public $queue = 'default';
 
     public function __construct(
         public Task $task
